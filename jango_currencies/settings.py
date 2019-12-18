@@ -30,7 +30,7 @@ SECRET_KEY = 'w+a6rz^v6#d_z_743&x%r%8s0)b789q8mr&2etp!0nrhi@hlj-'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-CELERY_BROKER_URL = 'amqp://test:passwd@localhost'
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
 CELERY_IMPORTS = ["currencies_api.tasks"]
 CELERY_ALWAYS_EAGER = False
 
@@ -104,11 +104,11 @@ WSGI_APPLICATION = 'jango_currencies.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'currencies_db',
-        'USER': 'gdeon',
-        'PASSWORD': '3228',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': os.getenv('PG_NAME'),
+        'USER': os.getenv('PG_USER'),
+        'PASSWORD': os.getenv('PG_PASS'),
+        'HOST': os.getenv('PG_HOST'),
+        'PORT': os.getenv('PG_PORT'),
     }
 }
 
