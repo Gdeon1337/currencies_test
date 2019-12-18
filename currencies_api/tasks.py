@@ -20,7 +20,6 @@ def load_currencies():
         ruble_rate = cbr_currencies.get(currency.title, {}).get('Value', 0)
         currency.ruble_rate = ruble_rate
         currency.save()
-    return 0
 
 
 def parse_cbr_currencies():
