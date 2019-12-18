@@ -12,7 +12,7 @@ def setup_periodic_tasks(sender, **kwargs):
     )
 
 
-@celery_app.task
+@celery_app.task(autoretry_for=(Exception,), retry_kwargs={'max_retries': 3})
 def load_currencies():
     currencies = Currencies.objects.all()
     cbr_currencies = parse_cbr_currencies()
@@ -23,5 +23,5 @@ def load_currencies():
 
 
 def parse_cbr_currencies():
-    cbr_currencies = requests.get('https://www.cbr-xml-daily.ru/daily_json.js').json()
+    cbr_currencies = requests.get('https://www.cbr-xml-daily.ru/daily_json.js', timeout=(5, 30)).json()
     return cbr_currencies.get('Valute', {})
