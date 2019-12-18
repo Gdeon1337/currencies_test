@@ -1,7 +1,9 @@
-from jango_currencies import celery_app
-from .models import Currencies
-from celery.schedules import crontab
 import requests
+from celery.schedules import crontab
+
+from jango_currencies import celery_app
+
+from .models import Currencies
 
 
 @celery_app.on_after_finalize.connect

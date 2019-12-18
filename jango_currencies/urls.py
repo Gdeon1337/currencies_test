@@ -15,9 +15,10 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from django.urls import path, include
-from currencies_api.views import CurrenciesView, CurrenciesConverterView
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter
+
+from currencies_api.views import CurrenciesConverterView, CurrenciesView
 
 router = DefaultRouter()
 router.register(r'currencies', CurrenciesView, basename='currency')
