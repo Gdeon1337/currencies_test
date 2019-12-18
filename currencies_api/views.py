@@ -1,5 +1,8 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
+from rest_framework.authentication import (BasicAuthentication,
+                                           SessionAuthentication)
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -8,11 +11,17 @@ from .serializers import CurrenciesSerializer
 
 
 class CurrenciesView(viewsets.ModelViewSet):
+    authentication_classes = (SessionAuthentication, BasicAuthentication)
+    permission_classes = (IsAuthenticated,)
+
     serializer_class = CurrenciesSerializer
     queryset = Currencies.objects.all()
 
 
 class CurrenciesConverterView(APIView):
+    authentication_classes = (SessionAuthentication, BasicAuthentication)
+    permission_classes = (IsAuthenticated,)
+
     def get(self, request):
         base_currency_id = request.query_params.get('base_currency_id')
         convert_currency_id = request.query_params.get('convert_currency_id')

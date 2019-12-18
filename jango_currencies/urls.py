@@ -26,4 +26,4 @@ urlpatterns = router.urls
 urlpatterns.append(path('admin/', admin.site.urls))
 urlpatterns.append(url(r'^auth/', include('rest_auth.urls')))
 urlpatterns.append(url(r'^auth/registration/', include('rest_auth.registration.urls')))
-urlpatterns.append(path('converter/', CurrenciesConverterView.as_view()))
+urlpatterns.append(path('convert/', CurrenciesConverterView.as_view()))
