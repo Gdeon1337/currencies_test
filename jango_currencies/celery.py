@@ -1,6 +1,11 @@
+import logging.config
 import os
 
 from celery import Celery
+
+from .settings import LOGGING
+
+logging.config.dictConfig(LOGGING)
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'jango_currencies.settings')
 

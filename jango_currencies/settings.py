@@ -14,6 +14,8 @@ import datetime
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from celery.schedules import crontab
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SITE_ID = 1
@@ -32,7 +34,7 @@ DEBUG = True
 
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
 CELERY_IMPORTS = ["currencies_api.tasks"]
-CELERY_ALWAYS_EAGER = False
+CELERY_TASK_ALWAYS_EAGER = False
 
 ALLOWED_HOSTS = []
 
@@ -74,6 +76,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'jango_currencies.middleware_auth.AuthMiddleware'
 ]
 
 ROOT_URLCONF = 'jango_currencies.urls'
@@ -147,6 +150,36 @@ USE_L10N = True
 
 USE_TZ = True
 
+PATH_AUTH = [
+    '/convert/',
+    '/currencies/',
+    '/auth/logout/'
+]
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.0/howto/static-files/
+CBR_URL = 'https://www.cbr-xml-daily.ru/daily_json.js'
+REQUESTS_TIMEOUT = os.getenv('REQUESTS_TIMEOUT')
+
+PERIOD_TASK_CELERY_MINUTE = os.getenv('PERIOD_TASK_CELERY_MINUTE', 0)
+PERIOD_TASK_CELERY_HOUR = os.getenv('PERIOD_TASK_CELERY_HOUR', 0)
+
+MAX_RETRY_CELERY_TASK = os.getenv('MAX_RETRY_CELERY_TASK')
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {'default': {'class': 'logging.StreamHandler'}},
+    'loggers': {
+        '': {
+            'handlers': ['default'],
+            'level': 'INFO' if not DEBUG else 'DEBUG',
+            'propagate': True
+        },
+    }
+}
+
+CELERY_BEAT_SCHEDULE = {
+    'load_currencies': {
+        'task': 'currencies_api.tasks.load_currencies',
+        'schedule': crontab(minute=PERIOD_TASK_CELERY_MINUTE, hour=PERIOD_TASK_CELERY_HOUR)
+    }
+}
