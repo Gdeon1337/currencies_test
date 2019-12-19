@@ -74,6 +74,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'jango_currencies.middleware_auth.AuthMiddleware'
 ]
 
 ROOT_URLCONF = 'jango_currencies.urls'
@@ -113,6 +114,7 @@ DATABASES = {
 }
 
 
+
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
@@ -147,6 +149,29 @@ USE_L10N = True
 
 USE_TZ = True
 
+PATH_AUTH = [
+    '/convert/',
+    '/currencies/',
+    '/auth/logout/'
+]
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.0/howto/static-files/
+CBR_URL = 'https://www.cbr-xml-daily.ru/daily_json.js'
+REQUESTS_TIMEOUT = os.getenv('REQUESTS_TIMEOUT')
+
+PERIOD_TASK_CELERY_MINUTE = os.getenv('PERIOD_TASK_CELERY_MINUTE')
+PERIOD_TASK_CELERY_HOUR = os.getenv('PERIOD_TASK_CELERY_HOUR')
+
+CELERY_MAX_RETRY = os.getenv('CELERY_MAX_RETRY')
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {'default': {'class': 'logging.StreamHandler'}},
+    'loggers': {
+        '': {
+            'handlers': ['default'],
+            'level': 'INFO' if not DEBUG else 'DEBUG',
+            'propagate': True
+        },
+    }
+}
