@@ -14,6 +14,8 @@ import datetime
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from celery.schedules import crontab
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SITE_ID = 1
@@ -30,7 +32,7 @@ SECRET_KEY = 'w+a6rz^v6#d_z_743&x%r%8s0)b789q8mr&2etp!0nrhi@hlj-'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
+CELERY_BROKER_URL = 'amqp://test:passwd@localhost'
 CELERY_IMPORTS = ["currencies_api.tasks"]
 CELERY_ALWAYS_EAGER = False
 
@@ -105,11 +107,11 @@ WSGI_APPLICATION = 'jango_currencies.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('PG_NAME'),
-        'USER': os.getenv('PG_USER'),
-        'PASSWORD': os.getenv('PG_PASS'),
-        'HOST': os.getenv('PG_HOST'),
-        'PORT': os.getenv('PG_PORT'),
+        'NAME': 'currencies_db',
+        'USER': 'gdeon',
+        'PASSWORD': '3228',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
@@ -158,8 +160,8 @@ PATH_AUTH = [
 CBR_URL = 'https://www.cbr-xml-daily.ru/daily_json.js'
 REQUESTS_TIMEOUT = os.getenv('REQUESTS_TIMEOUT')
 
-PERIOD_TASK_CELERY_MINUTE = os.getenv('PERIOD_TASK_CELERY_MINUTE')
-PERIOD_TASK_CELERY_HOUR = os.getenv('PERIOD_TASK_CELERY_HOUR')
+PERIOD_TASK_CELERY_MINUTE = os.getenv('PERIOD_TASK_CELERY_MINUTE', 0)
+PERIOD_TASK_CELERY_HOUR = os.getenv('PERIOD_TASK_CELERY_HOUR', 0)
 
 CELERY_MAX_RETRY = os.getenv('CELERY_MAX_RETRY')
 
@@ -173,5 +175,12 @@ LOGGING = {
             'level': 'INFO' if not DEBUG else 'DEBUG',
             'propagate': True
         },
+    }
+}
+
+CELERY_BEAT_SCHEDULE = {
+    'load_currencies': {
+        'task': 'currencies_api.tasks.load_currencies',
+        'schedule': crontab(hour=PERIOD_TASK_CELERY_HOUR, minute=PERIOD_TASK_CELERY_MINUTE),
     }
 }
