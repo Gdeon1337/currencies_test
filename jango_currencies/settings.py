@@ -32,9 +32,9 @@ SECRET_KEY = 'w+a6rz^v6#d_z_743&x%r%8s0)b789q8mr&2etp!0nrhi@hlj-'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-CELERY_BROKER_URL = 'amqp://test:passwd@localhost'
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
 CELERY_IMPORTS = ["currencies_api.tasks"]
-CELERY_ALWAYS_EAGER = False
+CELERY_TASK_ALWAYS_EAGER = False
 
 ALLOWED_HOSTS = []
 
@@ -107,14 +107,13 @@ WSGI_APPLICATION = 'jango_currencies.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'currencies_db',
-        'USER': 'gdeon',
-        'PASSWORD': '3228',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': os.getenv('PG_NAME'),
+        'USER': os.getenv('PG_USER'),
+        'PASSWORD': os.getenv('PG_PASS'),
+        'HOST': os.getenv('PG_HOST'),
+        'PORT': os.getenv('PG_PORT'),
     }
 }
-
 
 
 # Password validation
@@ -163,7 +162,7 @@ REQUESTS_TIMEOUT = os.getenv('REQUESTS_TIMEOUT')
 PERIOD_TASK_CELERY_MINUTE = os.getenv('PERIOD_TASK_CELERY_MINUTE', 0)
 PERIOD_TASK_CELERY_HOUR = os.getenv('PERIOD_TASK_CELERY_HOUR', 0)
 
-CELERY_MAX_RETRY = os.getenv('CELERY_MAX_RETRY')
+MAX_RETRY_CELERY_TASK = os.getenv('MAX_RETRY_CELERY_TASK')
 
 LOGGING = {
     'version': 1,
@@ -181,6 +180,6 @@ LOGGING = {
 CELERY_BEAT_SCHEDULE = {
     'load_currencies': {
         'task': 'currencies_api.tasks.load_currencies',
-        'schedule': crontab(hour=PERIOD_TASK_CELERY_HOUR, minute=PERIOD_TASK_CELERY_MINUTE),
+        'schedule': crontab(minute=PERIOD_TASK_CELERY_MINUTE, hour=PERIOD_TASK_CELERY_HOUR)
     }
 }

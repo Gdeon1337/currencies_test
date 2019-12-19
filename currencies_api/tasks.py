@@ -2,13 +2,12 @@ import logging
 
 from jango_currencies import celery_app
 
-from .defaults import CELERY_MAX_RETRY
-
 from .cbr_requests import parse_cbr_currencies
+from .defaults import MAX_RETRY_CELERY_TASK
 from .models import Currencies
 
 
-@celery_app.task(autoretry_for=(Exception,), retry_kwargs={'max_retries': CELERY_MAX_RETRY})
+@celery_app.task(autoretry_for=(Exception,), retry_kwargs={'max_retries': MAX_RETRY_CELERY_TASK})
 def load_currencies():
     logging.info('Celery Task %s started', 'load_currencies')
 

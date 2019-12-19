@@ -2,7 +2,7 @@ import logging
 
 import requests
 
-from .defaults import REQUESTS_TIMEOUT, CBR_URL
+from .defaults import CBR_URL, REQUESTS_TIMEOUT
 
 
 def parse_cbr_currencies():
